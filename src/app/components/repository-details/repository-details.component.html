@@ -1,0 +1,38 @@
+<p-card header="Repository Details">
+
+  <p><strong>Name:</strong> {{repositoryName}}</p>
+  <p><strong>Owner:</strong> {{repositoryOwner}}</p>
+
+  <div *ngIf="repositoryDetails$ | async as details else loadingOrError">
+
+    <h4 class="p-mt-5">Assignable Users:</h4>
+    <div *ngFor="let user of details?.assignableUsers">
+
+      <div class="p-d-flex p-flex-wrap" [style]="{maxWidth: '500px', marginLeft: 'auto'}">
+        <p-avatar *ngIf="user.avatarUrl" [image]="user.avatarUrl" styleClass="p-mr-2" size="large"
+                  shape="circle">
+        </p-avatar>
+        <p>{{user.login}}<span *ngIf="user.name"> ({{user.name}})</span></p>
+      </div>
+
+    </div>
+  </div>
+
+  <p-footer>
+    <button pButton type="button" label="Back to list" routerLink="/list"></button>
+  </p-footer>
+
+</p-card>
+
+<ng-template #loadingOrError>
+
+  <ng-container *ngIf="error; else loading">
+    <p-message severity="error" [text]="error.message"></p-message>
+  </ng-container>
+
+  <ng-template #loading>
+    <p-progressSpinner></p-progressSpinner>
+  </ng-template>
+
+</ng-template>
+
