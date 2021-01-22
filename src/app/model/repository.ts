@@ -1,8 +1,4 @@
-export interface User {
-  login: string;
-  name?: string;
-  avatarUrl?: string;
-}
+import { User } from './user';
 
 export interface Repository {
   name: string;

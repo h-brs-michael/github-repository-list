@@ -8,20 +8,16 @@
 
 <ng-container *ngIf="repositories$ | async as repos; else loadingOrError">
 
-  <div *ngFor="let repo of repos">
+  <p-card *ngFor="let repo of repos" class="p-m-1">
 
-    <p-card class="p-m-1">
+    <p><strong>Name:</strong> {{repo.name}}</p>
 
-      <p><strong>Name:</strong> {{repo.name}}</p>
+    <p><strong>Owner:</strong> {{repo.owner.login}} <span *ngIf="repo.owner.name">({{repo.owner.name}})</span></p>
 
-      <p><strong>Owner:</strong> {{repo.owner.login}} <span *ngIf="repo.owner.name">({{repo.owner.name}})</span></p>
+    <button pButton type="button" label="show details"
+            [routerLink]="['/repository', repo.name, repo.owner.login]"></button>
 
-      <button pButton type="button" label="show details"
-              [routerLink]="['/repository', repo.name, repo.owner.login]"></button>
-
-    </p-card>
-
-  </div>
+  </p-card>
 
 </ng-container>
 

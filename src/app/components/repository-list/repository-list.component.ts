@@ -1,9 +1,14 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Repository } from '../../model/repository';
 import { RepositoryService } from '../../services/repository.service';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, debounceTime, distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { Observable, throwError } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, first, map, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { SearchQueryState } from '../../reducers/searchQuery/search-query.reducers';
+import { selectSearchQuery } from '../../reducers/searchQuery/search-query.selector';
+import { set } from '../../reducers/searchQuery/search-query.actions';
 
 @Component({
   selector: 'app-repository-list',
@@ -12,32 +17,41 @@ import { FormBuilder, FormControl } from '@angular/forms';
 })
 export class RepositoryListComponent implements OnInit {
 
-  search$: Observable<string>;
   repositories$: Observable<Repository[]>;
   error: Error;
 
-  initValue = 'start';
-  searchControl = new FormControl(this.initValue);
+  searchControl = new FormControl();
 
-  constructor(private repositoryService: RepositoryService) {
+  constructor(private repositoryService: RepositoryService,
+              private store: Store<{ searchQueryState: SearchQueryState }>) {
   }
 
   ngOnInit(): void {
 
-    // todo: add laoding on new search value
-    this.search$ = this.searchControl.valueChanges
-      .pipe(
-        startWith(this.initValue),
-        tap(value => console.log('input search: ', value)),
-        debounceTime(200),
-        distinctUntilChanged(),
-        tap(value => console.log('result search: ', value))
-      );
+    const storeQuery$: Observable<string> = this.store.select(selectSearchQuery).pipe(
+      first(),
+      tap(storeQuery => console.log('query from store: ', storeQuery)),
+      tap(storeQuery => this.searchControl.setValue(storeQuery)),
+    );
 
-    // todo: add error
-    this.repositories$ = this.search$.pipe(
+    const formQuery$: Observable<string> = this.searchControl.valueChanges.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      tap(formQuery => console.log('query from form: ', formQuery))
+    );
+
+    const mergedQuery$: Observable<string> = merge(storeQuery$, formQuery$).pipe(
+      tap(mergedQuery => console.log('merged query: ', mergedQuery)),
+    );
+
+    this.repositories$ = mergedQuery$.pipe(
+      tap(value => this.store.dispatch(set({ searchQuery: value }))),
+      tap(result => console.log('set store query to:', result)),
       switchMap(value => this.repositoryService.searchPublicRepositories(value)),
-      tap(result => console.log(result))
+      catchError(error => {
+        this.error = error;
+        return throwError(error);
+      }),
     );
   }
 

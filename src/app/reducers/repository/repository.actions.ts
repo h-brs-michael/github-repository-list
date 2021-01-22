@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { RepositoryDetails } from '../../model/repository';
 
-export enum RepositoryActions {
+export enum RepositoryActionTypes {
   ADD = '[Repository Component] Add Repository'
 }
 
@@ -9,4 +9,4 @@ interface AddRepositoryProps {
   repository: RepositoryDetails;
 }
 
-export const add = createAction<RepositoryActions, AddRepositoryProps>(RepositoryActions.ADD, props<AddRepositoryProps>());
+export const add = createAction<RepositoryActionTypes, AddRepositoryProps>(RepositoryActionTypes.ADD, props<AddRepositoryProps>());

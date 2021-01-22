@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Repository, RepositoryDetails, User } from '../model/repository';
-import { Apollo, gql } from 'apollo-angular';
+import { Repository, RepositoryDetails } from '../model/repository';
+import { Apollo } from 'apollo-angular';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GET_REPOSITORIES_QUERY, GET_REPOSITORY_DETAILS_QUERY } from './queries';
+import { User } from '../model/user';
 
 interface RepositoryResult {
   search: {
@@ -60,9 +61,7 @@ export class RepositoryService {
       .valueChanges
       .pipe(
         map(result => result?.data.repository),
-        map(result => {
-          return { ...result, assignableUsers: result?.assignableUsers?.nodes };
-        })
+        map(result => ({ ...result, assignableUsers: result?.assignableUsers?.nodes })),
       );
   }
 
