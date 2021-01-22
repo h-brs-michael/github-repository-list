@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RepositoryService } from '../../services/repository.service';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { RepositoryDetails } from '../../model/repository';
+import { Store } from '@ngrx/store';
+import { add } from '../../reducers/repository/repository.actions';
 
 @Component({
   selector: 'app-repository-details',
@@ -19,7 +21,9 @@ export class RepositoryDetailsComponent implements OnInit {
   repositoryOwner;
 
   constructor(private activatedRoute: ActivatedRoute,
-              private repositoryService: RepositoryService) { }
+              private repositoryService: RepositoryService,
+              private store: Store) {
+  }
 
   ngOnInit(): void {
     const paramMap = this.activatedRoute.snapshot.paramMap;
@@ -32,7 +36,7 @@ export class RepositoryDetailsComponent implements OnInit {
           this.error = error;
           return throwError(error);
         }),
-        tap(result => console.log(result))
+        tap(repository => this.store.dispatch(add({ repository })))
       );
   }
 

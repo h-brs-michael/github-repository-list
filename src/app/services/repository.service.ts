@@ -14,6 +14,8 @@ interface RepositoryResult {
 interface RepositoryDetailsResult {
   repository: {
     name: string;
+    description: string;
+    owner: User
     assignableUsers: {
       nodes: User[];
     };
@@ -57,7 +59,7 @@ export class RepositoryService {
       })
       .valueChanges
       .pipe(
-        map(result => result?.data?.repository),
+        map(result => result?.data.repository),
         map(result => {
           return { ...result, assignableUsers: result?.assignableUsers?.nodes };
         })

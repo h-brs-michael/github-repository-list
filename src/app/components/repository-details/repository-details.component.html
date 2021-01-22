@@ -4,6 +4,7 @@
   <p><strong>Owner:</strong> {{repositoryOwner}}</p>
 
   <div *ngIf="repositoryDetails$ | async as details else loadingOrError">
+    <p><strong>Description:</strong> {{details.description}}</p>
 
     <h4 class="p-mt-5">Assignable Users:</h4>
     <div *ngFor="let user of details?.assignableUsers">

@@ -5,6 +5,11 @@ export const GET_REPOSITORY_DETAILS_QUERY = gql`
     repository(name: $repName, owner: $repOwner) {
       __typename
       name
+      description
+      owner {
+        login
+        avatarUrl
+      }
       assignableUsers(first: 20) {
         __typename
         nodes {

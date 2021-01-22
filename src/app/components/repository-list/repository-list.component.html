@@ -1,40 +1,40 @@
 <h2>Repository List</h2>
 
-  <div class="p-input-icon-left">
-    <i class="pi pi-search"></i>
-    <input type="text" pInputText placeholder="Search" [formControl]="searchControl">
+<div class="p-input-icon-left">
+  <i class="pi pi-search"></i>
+  <input type="text" pInputText placeholder="Search" [formControl]="searchControl">
+</div>
+<br/>
+
+<ng-container *ngIf="repositories$ | async as repos; else loadingOrError">
+
+  <div *ngFor="let repo of repos">
+
+    <p-card class="p-m-1">
+
+      <p><strong>Name:</strong> {{repo.name}}</p>
+
+      <p><strong>Owner:</strong> {{repo.owner.login}} <span *ngIf="repo.owner.name">({{repo.owner.name}})</span></p>
+
+      <button pButton type="button" label="show details"
+              [routerLink]="['/repository', repo.name, repo.owner.login]"></button>
+
+    </p-card>
+
   </div>
-  <br/>
 
-  <ng-container *ngIf="repositories$ | async as repos; else loadingOrError">
+</ng-container>
 
-    <div *ngFor="let repo of repos">
+<ng-template #loadingOrError>
 
-      <p-card class="p-m-1">
-
-        <p><strong>Name:</strong> {{repo?.name}}</p>
-
-        <p><strong>Owner:</strong> {{repo?.owner?.login}}</p>
-
-        <button class="" pButton type="button" label="show details"
-                [routerLink]="['/repository', repo?.name, repo?.owner?.login]"></button>
-
-      </p-card>
-
-    </div>
-
+  <ng-container *ngIf="error; else loading">
+    <p-message severity="error" [text]="error.message"></p-message>
   </ng-container>
 
-  <ng-template #loadingOrError>
-
-    <ng-container *ngIf="error; else loading">
-      <p-message severity="error" [text]="error.message"></p-message>
-    </ng-container>
-
-    <ng-template #loading>
-      <p-progressSpinner></p-progressSpinner>
-    </ng-template>
-
+  <ng-template #loading>
+    <p-progressSpinner></p-progressSpinner>
   </ng-template>
+
+</ng-template>
 
 

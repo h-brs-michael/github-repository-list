@@ -11,5 +11,7 @@ export interface Repository {
 
 export interface RepositoryDetails {
   name: string;
+  description: string;
+  owner: User;
   assignableUsers: User[];
 }
