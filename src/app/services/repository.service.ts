@@ -30,7 +30,6 @@ export class RepositoryService {
 
 
   constructor(private apollo: Apollo) {
-
   }
 
   searchPublicRepositories(queryString: string): Observable<Repository[]> {
@@ -60,8 +59,8 @@ export class RepositoryService {
       })
       .valueChanges
       .pipe(
-        map(result => result?.data.repository),
-        map(result => ({ ...result, assignableUsers: result?.assignableUsers?.nodes })),
+        map(response => response?.data?.repository),
+        map(response => ({ ...response, assignableUsers: response?.assignableUsers?.nodes })),
       );
   }
 

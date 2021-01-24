@@ -34,12 +34,11 @@ import { environment } from '../environments/environment';
     PrimeNgModule,
     GraphQLModule,
     HttpClientModule,
-    StoreModule.forRoot(reducers, {
-      metaReducers
-    }),
+    StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

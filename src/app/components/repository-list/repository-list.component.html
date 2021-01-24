@@ -14,9 +14,10 @@
 
     <p><strong>Owner:</strong> {{repo.owner.login}} <span *ngIf="repo.owner.name">({{repo.owner.name}})</span></p>
 
-    <button pButton type="button" label="show details"
-            [routerLink]="['/repository', repo.name, repo.owner.login]"></button>
-
+    <button pButton type="button"
+            label="show details"
+            [routerLink]="['/repository', repo.name, repo.owner.login]">
+    </button>
   </p-card>
 
 </ng-container>

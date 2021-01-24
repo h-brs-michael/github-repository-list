@@ -30,23 +30,18 @@ export class RepositoryListComponent implements OnInit {
 
     const storeQuery$: Observable<string> = this.store.select(selectSearchQuery).pipe(
       first(),
-      tap(storeQuery => console.log('query from store: ', storeQuery)),
       tap(storeQuery => this.searchControl.setValue(storeQuery)),
     );
 
     const formQuery$: Observable<string> = this.searchControl.valueChanges.pipe(
       debounceTime(400),
       distinctUntilChanged(),
-      tap(formQuery => console.log('query from form: ', formQuery))
     );
 
-    const mergedQuery$: Observable<string> = merge(storeQuery$, formQuery$).pipe(
-      tap(mergedQuery => console.log('merged query: ', mergedQuery)),
-    );
+    const mergedQuery$: Observable<string> = merge(storeQuery$, formQuery$);
 
     this.repositories$ = mergedQuery$.pipe(
       tap(value => this.store.dispatch(set({ searchQuery: value }))),
-      tap(result => console.log('set store query to:', result)),
       switchMap(value => this.repositoryService.searchPublicRepositories(value)),
       catchError(error => {
         this.error = error;

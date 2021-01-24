@@ -5,6 +5,7 @@
     <ng-container *ngIf="visitedRepositories$ | async as repositories">
 
       <p *ngIf="!repositories.length">No repositories visited yet.</p>
+
       <li *ngFor="let repository of repositories">
         <a [routerLink]="['/repository', repository.name, repository.owner.login]">{{repository.name}}</a>
       </li>
