@@ -30,9 +30,6 @@ export class RepositoryDetailsComponent implements OnInit {
 
     this.repositoryDetails$ = this.paramMap$
       .pipe(
-        tap((parameterMap) => {
-          console.log(`observable: owner: ${parameterMap.get('owner')} , name: ${parameterMap.get('name')}.`);
-        }),
         mergeMap(parameterMap => {
           return this.repositoryService.getRepositoryDetails(parameterMap.get('name'), parameterMap.get('owner'))
             .pipe(
