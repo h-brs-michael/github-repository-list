@@ -7,7 +7,8 @@ import { setContext } from '@apollo/client/link/context';
 
 const uri = environment.githubApiUrl;
 
-const token = '97afdfd96bea8b270c42adc4c06997c4da9b223a'; // personal github access token
+// todo: add github access token here:
+const token = 'ADD TOKEN HERE'; // personal github access token
 
 const auth = setContext((operation, context) => {
   return {
