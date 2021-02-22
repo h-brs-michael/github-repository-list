@@ -1,7 +1,9 @@
 <p-card header="Repository Details">
 
-  <p><strong>Name:</strong> {{repositoryName}}</p>
-  <p><strong>Owner:</strong> {{repositoryOwner}}</p>
+  <ng-container *ngIf="paramMap$ | async as paramMap">
+    <p><strong>Name:</strong> {{paramMap.get('name')}}</p>
+    <p><strong>Owner:</strong> {{paramMap.get('owner')}}</p>
+  </ng-container>
 
   <div *ngIf="repositoryDetails$ | async as details else loadingOrError">
     <p><strong>Description:</strong> {{details.description}}</p>

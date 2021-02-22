@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { RepositoryService } from '../../services/repository.service';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, mergeMap, tap } from 'rxjs/operators';
 import { RepositoryDetails } from '../../model/repository';
 import { Store } from '@ngrx/store';
 import { add } from '../../reducers/repository/repository.actions';
@@ -14,11 +14,10 @@ import { add } from '../../reducers/repository/repository.actions';
 })
 export class RepositoryDetailsComponent implements OnInit {
 
+  paramMap$: Observable<ParamMap>;
   repositoryDetails$: Observable<RepositoryDetails>;
-  error;
 
-  repositoryName;
-  repositoryOwner;
+  error: Error;
 
   constructor(private activatedRoute: ActivatedRoute,
               private repositoryService: RepositoryService,
@@ -26,17 +25,24 @@ export class RepositoryDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const paramMap = this.activatedRoute.snapshot.paramMap;
-    this.repositoryName = paramMap.get('name');
-    this.repositoryOwner = paramMap.get('owner');
 
-    this.repositoryDetails$ = this.repositoryService.getRepositoryDetails(this.repositoryName, this.repositoryOwner)
+    this.paramMap$ = this.activatedRoute.paramMap;
+
+    this.repositoryDetails$ = this.paramMap$
       .pipe(
-        catchError(error => {
-          this.error = error;
-          return throwError(error);
+        tap((parameterMap) => {
+          console.log(`observable: owner: ${parameterMap.get('owner')} , name: ${parameterMap.get('name')}.`);
         }),
-        tap(repository => this.store.dispatch(add({ repository })))
+        mergeMap(parameterMap => {
+          return this.repositoryService.getRepositoryDetails(parameterMap.get('name'), parameterMap.get('owner'))
+            .pipe(
+              catchError(error => {
+                this.error = error;
+                return throwError(error);
+              }),
+              tap(repository => this.store.dispatch(add({ repository })))
+            );
+        })
       );
   }
 
